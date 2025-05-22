@@ -64,3 +64,20 @@ const addFilter = (filter) => {
     });
   });
 };
+
+const token = sessionStorage.getItem("token");
+
+if (token) {
+  const edit = document.querySelector(".edit");
+  const login = document.querySelector(".login");
+  const logout = document.querySelector(".logout");
+
+  edit.classList.remove("hidden");
+  logout.classList.remove("hidden");
+  login.classList.add("hidden");
+
+  logout.addEventListener("click", () => {
+    sessionStorage.removeItem("token");
+    window.location.reload();
+  });
+}
