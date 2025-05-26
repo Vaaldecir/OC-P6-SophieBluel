@@ -20,6 +20,7 @@ const works = fetch("http://localhost:5678/api/works")
       figure.dataset.categoryId = element.categoryId;
       figure.appendChild(img);
       figure.appendChild(figcaption);
+      // @ts-ignore
       gallery.appendChild(figure);
     });
   });
@@ -43,10 +44,12 @@ const categories = fetch("http://localhost:5678/api/categories")
 const addFilter = (filter) => {
   const button = document.createElement("button");
   button.innerText = filter.name;
+  // @ts-ignore
   filters.appendChild(button);
   button.classList.add("filter-btn");
 
   button.addEventListener("click", (event) => {
+    // @ts-ignore
     const figuresNodes = gallery.querySelectorAll("figure");
     const figuresArray = Array.from(figuresNodes);
 
@@ -72,10 +75,16 @@ if (token) {
   const login = document.querySelector(".login");
   const logout = document.querySelector(".logout");
 
+  // @ts-ignore
+  filters.classList.add("hidden");
+  // @ts-ignore
   edit.classList.remove("hidden");
+  // @ts-ignore
   logout.classList.remove("hidden");
+  // @ts-ignore
   login.classList.add("hidden");
 
+  // @ts-ignore
   logout.addEventListener("click", () => {
     sessionStorage.removeItem("token");
     window.location.reload();

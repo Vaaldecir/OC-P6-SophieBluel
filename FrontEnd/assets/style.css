@@ -177,11 +177,13 @@ nav li {
 li:hover {
   color: #b1663c;
 }
-nav a {
-  text-decoration: none;
+a:hover {
+  color: #b1663c;
 }
-a:visited {
+
+a {
   color: #000000;
+  text-decoration: unset;
 }
 #introduction {
   display: flex;
@@ -206,9 +208,17 @@ a:visited {
 #introduction p {
   margin-bottom: 0.5em;
 }
-#portfolio h2 {
-  text-align: center;
-  margin-bottom: 1em;
+
+.portfolio-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 2em;
+}
+.edit {
+  display: flex;
+  align-items: center;
 }
 .filters {
   display: flex;
@@ -299,6 +309,7 @@ input[type="submit"] {
   text-align: center;
   border-radius: 60px;
 }
+
 footer {
   background-color: #ffffff;
   height: 60px;
