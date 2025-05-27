@@ -1,5 +1,6 @@
 const gallery = document.querySelector(".gallery");
 const filters = document.querySelector(".filters");
+const editModal = document.querySelector(".modal");
 
 const works = fetch("http://localhost:5678/api/works")
   .then((response) => {
@@ -34,7 +35,6 @@ const categories = fetch("http://localhost:5678/api/categories")
     }
   })
   .then((data) => {
-    // data.unshift({ id: 0, name: "Tous" });
     addFilter({ id: 0, name: "Tous" });
     data.forEach((category) => {
       addFilter(category);
@@ -83,10 +83,26 @@ if (token) {
   logout.classList.remove("hidden");
   // @ts-ignore
   login.classList.add("hidden");
-
   // @ts-ignore
   logout.addEventListener("click", () => {
     sessionStorage.removeItem("token");
     window.location.reload();
+  });
+  // @ts-ignore
+  edit.addEventListener("click", () => {
+    console.log("click clack kodak");
+    // @ts-ignore
+    editModal.classList.remove("hidden");
+    // @ts-ignore
+    editModal.classList.add("logged");
+
+    const exit = document.querySelector(".exit");
+    // @ts-ignore
+    exit.addEventListener("click", () => {
+      // @ts-ignore
+      editModal.classList.add("hidden");
+      // @ts-ignore
+      editModal.classList.remove("logged");
+    });
   });
 }
