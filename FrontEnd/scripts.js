@@ -1,3 +1,4 @@
+// @ts-nocheck
 const gallery = document.querySelector(".gallery");
 const filters = document.querySelector(".filters");
 const editModal = document.querySelector(".modal");
@@ -15,13 +16,14 @@ const works = fetch("http://localhost:5678/api/works")
       const figure = document.createElement("figure");
       const img = document.createElement("img");
       const figcaption = document.createElement("figcaption");
+
       img.src = element.imageUrl;
       img.alt = element.title;
       figcaption.innerText = element.title;
       figure.dataset.categoryId = element.categoryId;
+
       figure.appendChild(img);
       figure.appendChild(figcaption);
-      // @ts-ignore
       gallery.appendChild(figure);
     });
   });
@@ -43,21 +45,22 @@ const categories = fetch("http://localhost:5678/api/categories")
 
 const addFilter = (filter) => {
   const button = document.createElement("button");
+
   button.innerText = filter.name;
-  // @ts-ignore
   filters.appendChild(button);
   button.classList.add("filter-btn");
 
   button.addEventListener("click", (event) => {
-    // @ts-ignore
     const figuresNodes = gallery.querySelectorAll("figure");
     const figuresArray = Array.from(figuresNodes);
-
     const allButtons = document.querySelectorAll(".filter-btn");
+
     allButtons.forEach((btn) => {
       btn.classList.remove("selected");
     });
+
     button.classList.add("selected");
+
     figuresArray.forEach((figure) => {
       if (filter.id === 0 || Number(figure.dataset.categoryId) === filter.id) {
         figure.classList.remove("hidden");
@@ -75,34 +78,30 @@ if (token) {
   const login = document.querySelector(".login");
   const logout = document.querySelector(".logout");
 
-  // @ts-ignore
   filters.classList.add("hidden");
-  // @ts-ignore
   edit.classList.remove("hidden");
-  // @ts-ignore
   logout.classList.remove("hidden");
-  // @ts-ignore
   login.classList.add("hidden");
-  // @ts-ignore
+
   logout.addEventListener("click", () => {
     sessionStorage.removeItem("token");
     window.location.reload();
   });
-  // @ts-ignore
-  edit.addEventListener("click", () => {
-    console.log("click clack kodak");
-    // @ts-ignore
-    editModal.classList.remove("hidden");
-    // @ts-ignore
-    editModal.classList.add("logged");
 
+  edit.addEventListener("click", () => {
     const exit = document.querySelector(".exit");
-    // @ts-ignore
+    const modal = document.querySelector(".modal");
+
+    editModal.classList.replace("hidden", "logged");
+
     exit.addEventListener("click", () => {
-      // @ts-ignore
-      editModal.classList.add("hidden");
-      // @ts-ignore
-      editModal.classList.remove("logged");
+      editModal.classList.replace("logged", "hidden");
+    });
+
+    modal.addEventListener("click", (event) => {
+      if (event.target.classList.contains("modal")) {
+        editModal.classList.replace("logged", "hidden");
+      }
     });
   });
 }

@@ -173,6 +173,7 @@ nav ul {
 nav li {
   padding: 0 10px;
   font-size: 1.2em;
+  cursor: pointer;
 }
 li:hover {
   color: #b1663c;
@@ -325,6 +326,7 @@ input[type="submit"] {
   justify-content: center;
 }
 .modal-wrapper {
+  position: relative;
   overflow: auto;
   width: 600px;
   max-width: calc(100vw - 30px);
@@ -334,10 +336,11 @@ input[type="submit"] {
   border-radius: 10px;
 }
 .exit {
+  position: absolute;
+  right: 10px;
+  top: 10px;
   cursor: pointer;
   font-size: 24px;
-  display: flex;
-  justify-content: end;
   padding: 8px;
 }
 #titlemodal {
