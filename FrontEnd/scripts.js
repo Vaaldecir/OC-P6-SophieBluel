@@ -13,20 +13,38 @@ const works = fetch("http://localhost:5678/api/works")
   })
   .then((data) => {
     data.forEach((element) => {
-      const figure = document.createElement("figure");
-      const img = document.createElement("img");
-      const figcaption = document.createElement("figcaption");
-
-      img.src = element.imageUrl;
-      img.alt = element.title;
-      figcaption.innerText = element.title;
-      figure.dataset.categoryId = element.categoryId;
-
-      figure.appendChild(img);
-      figure.appendChild(figcaption);
-      gallery.appendChild(figure);
+      addWorkToMainGallery(element);
+      addWorkToModalGallery(element);
     });
   });
+
+const addWorkToMainGallery = (element) => {
+  const figure = document.createElement("figure");
+  const img = document.createElement("img");
+  const figcaption = document.createElement("figcaption");
+
+  img.src = element.imageUrl;
+  img.alt = element.title;
+  figcaption.innerText = element.title;
+  figure.dataset.categoryId = element.categoryId;
+
+  figure.appendChild(img);
+  figure.appendChild(figcaption);
+  gallery.appendChild(figure);
+};
+
+const addWorkToModalGallery = (element) => {
+  const modalGallery = document.querySelector(".modal-gallery");
+  const div = document.createElement("div");
+  const img = document.createElement("img");
+
+  img.src = element.imageUrl;
+  img.alt = element.title;
+  div.dataset.workId = element.id; //a modifier pour le placer sur la corbeille
+
+  div.appendChild(img);
+  modalGallery.appendChild(div);
+};
 
 const categories = fetch("http://localhost:5678/api/categories")
   .then((response) => {
