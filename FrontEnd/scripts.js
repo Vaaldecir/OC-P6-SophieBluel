@@ -37,13 +37,21 @@ const addWorkToModalGallery = (element) => {
   const modalGallery = document.querySelector(".modal-gallery");
   const div = document.createElement("div");
   const img = document.createElement("img");
+  const trash = document.createElement("i");
 
   img.src = element.imageUrl;
   img.alt = element.title;
-  div.dataset.workId = element.id; //a modifier pour le placer sur la corbeille
+  div.classList.add("modal-photo");
+  trash.classList.add("fa", "fa-trash", "delete");
+  trash.dataset.workId = element.id; //a modifier pour le placer sur la corbeille
 
   div.appendChild(img);
+  div.appendChild(trash);
   modalGallery.appendChild(div);
+
+  trash.addEventListener("click", () => {
+    console.log(trash.dataset.workId);
+  });
 };
 
 const categories = fetch("http://localhost:5678/api/categories")
@@ -95,11 +103,13 @@ if (token) {
   const edit = document.querySelector(".edit");
   const login = document.querySelector(".login");
   const logout = document.querySelector(".logout");
+  const editBanner = document.querySelector(".edit-banner");
 
   filters.classList.add("hidden");
   edit.classList.remove("hidden");
   logout.classList.remove("hidden");
   login.classList.add("hidden");
+  editBanner.classList.remove("hidden");
 
   logout.addEventListener("click", () => {
     sessionStorage.removeItem("token");
