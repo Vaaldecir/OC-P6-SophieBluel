@@ -90,22 +90,30 @@
   </main>
   <aside class="modal hidden" aria-hidden="true" role="dialog" aria-labelledby="titlemodal">
     <div class="modal-wrapper">
-      <i class="fa-solid fa-arrow-left page-2 return"></i>
+      <i class="fa-solid fa-arrow-left return hidden"></i>
       <i class="fa-solid fa-xmark exit"></i>
-      <h1 id="titlemodal" class="page-1">Galerie Photo</h1>
+      <!-- Modal's First page -->
+      <h1 id="titlemodal">Galerie Photo</h1>
       <div class="modal-gallery page-1">
       </div>
-      <button class="modal-button page-1">Ajouter une Photo</button>
-      <h1 class="page-2">Ajout photo</h1>
-      <form action="" class="upload-photos page-2">
-        <label for="image" class="image-label">
-          <i class="fa-regular fa-image"></i>
+      <button class="modal-button display-btn">Ajouter une Photo</button>
+      <!-- Modal's second page -->
+      <h1 class="add-photo-title hidden">Ajout photo</h1>
+      <form action="" class="upload-photos hidden" id="image-form">
+        <label for="image" class="image-label hidden">
+          <i class="fa-regular fa-image "></i>
           <span class="img-btn">+ Ajouter photo</span>
           <p class="img-details">jpg, png : 4mo max</p>
-          <input type="file" id="image" name="image" accept=".png, .jpg" hidden />
+          <input type="file" id="image" name="image" accept=".png, .jpg" hidden required>
         </label>
         <label for="title" class="img-title">Titre</label>
-        <input type="text" name="title" class="image-title">
+        <input type="text" name="title" class="image-title" required>
+        <label for="category" class="image-category">Catégorie</label>
+        <div class="select-category">
+          <select name="category" id="category" required></select>
+          <i class="fa-solid fa-chevron-down chevron"></i>
+        </div>
+        <button type="submit" class="form-button unfulfilled">Valider</button>
       </form>
     </div>
   </aside>
