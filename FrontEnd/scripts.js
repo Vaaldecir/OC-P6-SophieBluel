@@ -27,6 +27,7 @@ const addWorkToMainGallery = (element) => {
   img.alt = element.title;
   figcaption.innerText = element.title;
   figure.dataset.categoryId = element.categoryId;
+  figure.dataset.workId = element.id;
 
   figure.appendChild(img);
   figure.appendChild(figcaption);
@@ -43,14 +44,28 @@ const addWorkToModalGallery = (element) => {
   img.alt = element.title;
   div.classList.add("modal-photo");
   trash.classList.add("fa", "fa-trash", "delete");
-  trash.dataset.workId = element.id; //a modifier pour le placer sur la corbeille
+  trash.dataset.workId = element.id;
 
   div.appendChild(img);
   div.appendChild(trash);
   modalGallery.appendChild(div);
 
   trash.addEventListener("click", () => {
-    console.log(trash.dataset.workId);
+    fetch(`http://localhost:5678/api/works/${trash.dataset.workId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    }).then((response) => {
+      if (response.ok) {
+        gallery
+          .querySelector(`[data-work-id="${trash.dataset.workId}"]`)
+          .classList.add("hidden");
+        div.classList.add("hidden");
+      } else {
+        console.error(response.status + response.statusText);
+      }
+    });
   });
 };
 
