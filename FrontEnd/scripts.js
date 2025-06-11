@@ -3,118 +3,169 @@ const gallery = document.querySelector(".gallery");
 const filters = document.querySelector(".filters");
 const editModal = document.querySelector(".modal");
 
+// fetch the work already in the API
 const works = fetch("http://localhost:5678/api/works")
   .then((response) => {
     if (response.ok) {
       return response.json();
     } else {
+      //if there's a problem, display the status and message problem
       console.error(response.status + response.statusText);
     }
   })
   .then((data) => {
+    // if not, for each element in the API, see the following functions
     data.forEach((element) => {
       addWorkToMainGallery(element);
       addWorkToModalGallery(element);
     });
   });
 
+// this function display the work images into the main gallery
 const addWorkToMainGallery = (element) => {
+  // create HTML elements
   const figure = document.createElement("figure");
   const img = document.createElement("img");
   const figcaption = document.createElement("figcaption");
 
+  // go find and attach the image and title to the elements
   img.src = element.imageUrl;
   img.alt = element.title;
   figcaption.innerText = element.title;
+  // ad the required IDs
   figure.dataset.categoryId = element.categoryId;
   figure.dataset.workId = element.id;
 
+  // attach the created elements to the gallery section
   figure.appendChild(img);
   figure.appendChild(figcaption);
   gallery.appendChild(figure);
 };
 
+// this function display the work images into the modal when in edit mode
 const addWorkToModalGallery = (element) => {
   const modalGallery = document.querySelector(".modal-gallery");
+  // create HTML elements
   const div = document.createElement("div");
   const img = document.createElement("img");
   const trash = document.createElement("i");
 
+  // go find and attach the image and title to the elements
   img.src = element.imageUrl;
   img.alt = element.title;
+  // add some required class to the element
   div.classList.add("modal-photo");
   trash.classList.add("fa", "fa-trash", "delete");
+  // ad the required IDs
   trash.dataset.workId = element.id;
 
+  // attach the created elements to the modal gallery section
   div.appendChild(img);
   div.appendChild(trash);
   modalGallery.appendChild(div);
 
+  // when the trash is clicked
   trash.addEventListener("click", () => {
+    // fetch the API to delete the work
     fetch(`http://localhost:5678/api/works/${trash.dataset.workId}`, {
       method: "DELETE",
       headers: {
         Authorization: "Bearer " + token,
       },
     }).then((response) => {
+      // if the workId matches and there's a token
       if (response.ok) {
+        // also hide the work in the main gallery
         gallery
           .querySelector(`[data-work-id="${trash.dataset.workId}"]`)
           .classList.add("hidden");
         div.classList.add("hidden");
       } else {
-        console.error(response.status + response.statusText);
+        // if not, alert the user that a problem occured
+        alert(response.status + response.statusText);
       }
     });
   });
 };
 
+// fetch the categories already in the API
 const categories = fetch("http://localhost:5678/api/categories")
   .then((response) => {
     if (response.ok) {
       return response.json();
     } else {
+      // if there's a problem, display the status and message problem
       console.error(response.status + response.statusText);
     }
   })
   .then((data) => {
-    addFilter({ id: 0, name: "Tous" });
+    // if not, for each element in the API, see the following functions
+    // also add a default button to display all the works
+    addFilterToMainGallery({ id: 0, name: "Tous" });
     data.forEach((category) => {
-      addFilter(category);
+      addFilterToMainGallery(category);
+      addFilterToModalForm(category);
     });
   });
 
-const addFilter = (filter) => {
+//this function add filter buttons to the main gallery
+const addFilterToMainGallery = (filter) => {
+  // create HTML element
   const button = document.createElement("button");
 
+  // go find and attach the name to the element
   button.innerText = filter.name;
-  filters.appendChild(button);
+  // add the required class
   button.classList.add("filter-btn");
 
+  // attach the element to the main gallery
+  filters.appendChild(button);
+
+  // if we click on the button
   button.addEventListener("click", (event) => {
     const figuresNodes = gallery.querySelectorAll("figure");
     const figuresArray = Array.from(figuresNodes);
     const allButtons = document.querySelectorAll(".filter-btn");
 
+    //remove the selected class to all buttons
     allButtons.forEach((btn) => {
       btn.classList.remove("selected");
     });
 
+    //add the selected class to the button clicked
     button.classList.add("selected");
 
+    //search into the gallery images
     figuresArray.forEach((figure) => {
+      //if the filter ID is equal to 0 or the image ID
       if (filter.id === 0 || Number(figure.dataset.categoryId) === filter.id) {
+        //we display the image
         figure.classList.remove("hidden");
+        //if that's not the case
       } else if (Number(figure.dataset.categoryId) !== filter.id) {
+        //we hide it
         figure.classList.add("hidden");
       }
     });
   });
 };
 
+//this function add category selection to the form
+const addFilterToModalForm = (filter) => {
+  const categoryInput = editModal.querySelector("#category");
+  // create HTML element
+  const option = document.createElement("option");
+
+  // go find and attach the name to the element
+  option.innerText = filter.name;
+
+  // attach the element to the main gallery
+  categoryInput.appendChild(option);
+};
+
 const token = sessionStorage.getItem("token");
 
-//If there's a Token
+// If there's a Token
 if (token) {
   const edit = document.querySelector(".edit");
   const login = document.querySelector(".login");
@@ -128,7 +179,7 @@ if (token) {
   login.classList.add("hidden");
   editBanner.classList.remove("hidden");
 
-  //when we want to log out, remove the token
+  // when we want to log out, remove the token
   logout.addEventListener("click", () => {
     sessionStorage.removeItem("token");
     window.location.reload();
@@ -161,7 +212,7 @@ if (token) {
       const modalGallery = document.querySelector(".modal-gallery");
       const returnIcon = document.querySelector(".return");
       const secondTitle = document.querySelector(".add-photo-title");
-      const imgUploadForm = document.querySelector(".upload-photos");
+      const imgUploadForm = modal.querySelector("form");
       const label = document.querySelector(".image-label");
 
       // hide the gallery page and display the form page
@@ -173,9 +224,9 @@ if (token) {
       modalGallery.classList.replace("page-1", "hidden");
       modalBtn.classList.replace("display-btn", "hidden");
 
-      //When we click the left arrow
+      // When we click the left arrow
       returnIcon.addEventListener("click", () => {
-        //Go back to the gallery page
+        // Go back to the gallery page
         returnIcon.classList.add("hidden");
         secondTitle.classList.replace("page-2", "hidden");
         imgUploadForm.classList.replace("page-2", "hidden");
@@ -183,6 +234,29 @@ if (token) {
         titleModal.classList.remove("hidden");
         modalGallery.classList.replace("hidden", "page-1");
         modalBtn.classList.replace("hidden", "display-btn");
+      });
+
+      //When the user submit its new work
+      imgUploadForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+        const image = formData.get("image");
+        const title = formData.get("title");
+        const category = formData.get("category");
+
+        fetch("http://localhost:5678/api/works", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "multipart/form-data",
+          },
+          // ???
+          // body: JSON.stringify({
+          //   email,
+          //   password,
+          // }),
+        });
       });
     });
   });
