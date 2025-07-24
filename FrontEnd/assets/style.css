@@ -455,6 +455,12 @@ input[type="submit"] {
   color: #b9c5cc;
   font-size: 64px;
 }
+.img-preview {
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  background-color: #e8f1f6;
+}
 .img-btn {
   background-color: #cbd6dc;
   font-size: 16px;
@@ -493,10 +499,12 @@ input[type="submit"] {
 .unfulfilled {
   background-color: #a7a7a7;
   border-color: #a7a7a7;
+  cursor: not-allowed;
 }
 .fulfilled {
   background-color: #1d6154;
   border-color: #1d6154;
+  cursor: pointer;
 }
 
 footer {

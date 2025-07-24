@@ -104,7 +104,7 @@ const categories = fetch("http://localhost:5678/api/categories")
     addFilterToMainGallery({ id: 0, name: "Tous" });
     data.forEach((category) => {
       addFilterToMainGallery(category);
-      addFilterToModalForm(category);
+      addCategoryToModalForm(category);
     });
   });
 
@@ -151,13 +151,14 @@ const addFilterToMainGallery = (filter) => {
 };
 
 //this function add category selection to the form
-const addFilterToModalForm = (filter) => {
+const addCategoryToModalForm = (filter) => {
   const categoryInput = editModal.querySelector("#category");
   // create HTML element
   const option = document.createElement("option");
 
   // go find and attach the name to the element
   option.innerText = filter.name;
+  option.value = filter.id;
 
   // attach the element to the main gallery
   categoryInput.appendChild(option);
@@ -213,6 +214,11 @@ if (token) {
       const returnIcon = document.querySelector(".return");
       const secondTitle = document.querySelector(".add-photo-title");
       const imgUploadForm = modal.querySelector("form");
+      const imgInput = modal.querySelector("#image");
+      const previewImg = modal.querySelector("#preview");
+      const titleInput = modal.querySelector(".image-title");
+      const categorySelect = modal.querySelector("#category");
+      const submitBtn = modal.querySelector(".form-button");
       const label = document.querySelector(".image-label");
 
       // hide the gallery page and display the form page
@@ -236,27 +242,69 @@ if (token) {
         modalBtn.classList.replace("hidden", "display-btn");
       });
 
+      // Check if the form is completed
+      const checkFormValidity = () => {
+        if (
+          imgInput.files.length > 0 &&
+          titleInput.value.trim() !== "" &&
+          categorySelect.value !== ""
+        ) {
+          submitBtn.disabled = false;
+          submitBtn.classList.replace("unfulfilled", "fulfilled");
+        } else {
+          submitBtn.disabled = true;
+          submitBtn.classList.replace("fulfilled", "unfulfilled");
+        }
+      };
+
+      imgInput.addEventListener("change", () => {
+        checkFormValidity();
+
+        const file = imgInput.files[0];
+
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            previewImg.src = e.target.result;
+            previewImg.classList.remove("hidden");
+            label.classList.replace("page-2", "hidden");
+          };
+          reader.readAsDataURL(file);
+        } else {
+          previewImg.classList.add("hidden");
+          label.classList.replace("hidden", "page-2");
+        }
+      });
+      titleInput.addEventListener("input", checkFormValidity);
+      categorySelect.addEventListener("change", checkFormValidity);
+
       //When the user submit its new work
       imgUploadForm.addEventListener("submit", (event) => {
         event.preventDefault();
 
-        const formData = new FormData(form);
+        const formData = new FormData(imgUploadForm);
         const image = formData.get("image");
         const title = formData.get("title");
         const category = formData.get("category");
 
+        console.log(formData);
         fetch("http://localhost:5678/api/works", {
           method: "POST",
           headers: {
             Accept: "application/json",
-            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
           },
-          // ???
-          // body: JSON.stringify({
-          //   email,
-          //   password,
-          // }),
-        });
+          body: formData,
+        })
+          .then((response) => {
+            if (!response.ok) {
+              alert("Erreur lors de l'envoi du formulaire");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log("Formulaire envoyé avec succès :", data);
+          });
       });
     });
   });

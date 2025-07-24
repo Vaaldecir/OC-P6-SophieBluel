@@ -106,6 +106,8 @@
           <p class="img-details">jpg, png : 4mo max</p>
           <input type="file" id="image" name="image" accept=".png, .jpg" hidden required>
         </label>
+        <img src="#" alt="Aperçu de l'image" id="preview" class="img-preview hidden">
+
         <label for="title" class="img-title">Titre</label>
         <input type="text" name="title" class="image-title" required>
         <label for="category" class="image-category">Catégorie</label>
@@ -115,7 +117,7 @@
           </select>
           <i class="fa-solid fa-chevron-down chevron"></i>
         </div>
-        <button type="submit" class="form-button unfulfilled">Valider</button>
+        <button type="submit" class="form-button unfulfilled" disabled>Valider</button>
       </form>
     </div>
   </aside>
