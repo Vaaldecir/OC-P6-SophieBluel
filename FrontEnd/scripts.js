@@ -173,6 +173,21 @@ if (token) {
   const logout = document.querySelector(".logout");
   const editBanner = document.querySelector(".edit-banner");
 
+  const imgUploadForm = document.querySelector("#image-form");
+  const imgInput = document.querySelector("#image");
+  const previewImg = document.querySelector("#preview");
+  const titleInput = document.querySelector(".image-title");
+  const categorySelect = document.querySelector("#category");
+  const submitBtn = document.querySelector(".form-button");
+  const label = document.querySelector(".image-label");
+
+  const titleModal = document.querySelector("#titlemodal");
+  const modalGallery = document.querySelector(".modal-gallery");
+  const returnIcon = document.querySelector(".return");
+  const secondTitle = document.querySelector(".add-photo-title");
+  const modalBtn = document.querySelector(".modal-button");
+  const exit = document.querySelector(".exit");
+
   // display/hide the following
   filters.classList.add("hidden");
   edit.classList.remove("hidden");
@@ -186,126 +201,141 @@ if (token) {
     window.location.reload();
   });
 
+  //This function change the main modal page to the form page
+  const showFormPage = () => {
+    returnIcon.classList.remove("hidden");
+    secondTitle.classList.replace("hidden", "page-2");
+    imgUploadForm.classList.replace("hidden", "page-2");
+    label.classList.replace("hidden", "page-2");
+    titleModal.classList.add("hidden");
+    modalGallery.classList.replace("page-1", "hidden");
+    modalBtn.classList.replace("display-btn", "hidden");
+  };
+
+  // this function reset the form and the modal go back to the main page
+  const resetModal = () => {
+    //Return to the first page
+    document.querySelector(".return").classList.add("hidden");
+    document
+      .querySelector(".add-photo-title")
+      .classList.replace("page-2", "hidden");
+    document.querySelector("#image-form").classList.replace("page-2", "hidden");
+    document
+      .querySelector(".image-label")
+      .classList.replace("page-2", "hidden");
+    document.querySelector("#titlemodal").classList.remove("hidden");
+    document
+      .querySelector(".modal-gallery")
+      .classList.replace("hidden", "page-1");
+    document
+      .querySelector(".modal-button")
+      .classList.replace("hidden", "display-btn");
+
+    //reset form
+    document.querySelector("#image-form").reset();
+    document.querySelector("#preview").classList.add("hidden");
+
+    // reset form button
+    const submitBtn = document.querySelector(".form-button");
+    submitBtn.disabled = true;
+    submitBtn.classList.replace("fulfilled", "unfulfilled");
+  };
+
   // when we click the edit button
   edit.addEventListener("click", () => {
-    const exit = document.querySelector(".exit");
-    const modal = document.querySelector(".modal");
-    const modalBtn = document.querySelector(".modal-button");
-
     // a modal is displayed
     editModal.classList.replace("hidden", "logged");
 
     // hide the modal when we click the exit button
     exit.addEventListener("click", () => {
       editModal.classList.replace("logged", "hidden");
+      resetModal();
     });
 
     // also hide the modal when we click outside the modal window
-    modal.addEventListener("click", (event) => {
+    editModal.addEventListener("click", (event) => {
       if (event.target.classList.contains("modal")) {
         editModal.classList.replace("logged", "hidden");
+        resetModal();
       }
     });
 
-    // when we click the button "ajouter des photos"
-    modalBtn.addEventListener("click", () => {
-      const titleModal = document.querySelector("#titlemodal");
-      const modalGallery = document.querySelector(".modal-gallery");
-      const returnIcon = document.querySelector(".return");
-      const secondTitle = document.querySelector(".add-photo-title");
-      const imgUploadForm = modal.querySelector("form");
-      const imgInput = modal.querySelector("#image");
-      const previewImg = modal.querySelector("#preview");
-      const titleInput = modal.querySelector(".image-title");
-      const categorySelect = modal.querySelector("#category");
-      const submitBtn = modal.querySelector(".form-button");
-      const label = document.querySelector(".image-label");
+    // when we click the button "ajouter des photos", hide the gallery page and display the form page
+    modalBtn.addEventListener("click", showFormPage);
 
-      // hide the gallery page and display the form page
-      returnIcon.classList.remove("hidden");
-      secondTitle.classList.replace("hidden", "page-2");
-      imgUploadForm.classList.replace("hidden", "page-2");
-      label.classList.replace("hidden", "page-2");
-      titleModal.classList.add("hidden");
-      modalGallery.classList.replace("page-1", "hidden");
-      modalBtn.classList.replace("display-btn", "hidden");
+    // When we click the left arrow
+    returnIcon.addEventListener("click", resetModal);
 
-      // When we click the left arrow
-      returnIcon.addEventListener("click", () => {
-        // Go back to the gallery page
-        returnIcon.classList.add("hidden");
-        secondTitle.classList.replace("page-2", "hidden");
-        imgUploadForm.classList.replace("page-2", "hidden");
-        label.classList.replace("page-2", "hidden");
-        titleModal.classList.remove("hidden");
-        modalGallery.classList.replace("hidden", "page-1");
-        modalBtn.classList.replace("hidden", "display-btn");
-      });
+    // Check if the form is completed
+    const checkFormValidity = () => {
+      if (
+        imgInput.files.length > 0 &&
+        titleInput.value.trim() !== "" &&
+        categorySelect.value !== ""
+      ) {
+        submitBtn.disabled = false;
+        submitBtn.classList.replace("unfulfilled", "fulfilled");
+      } else {
+        submitBtn.disabled = true;
+        submitBtn.classList.replace("fulfilled", "unfulfilled");
+      }
+    };
 
-      // Check if the form is completed
-      const checkFormValidity = () => {
-        if (
-          imgInput.files.length > 0 &&
-          titleInput.value.trim() !== "" &&
-          categorySelect.value !== ""
-        ) {
-          submitBtn.disabled = false;
-          submitBtn.classList.replace("unfulfilled", "fulfilled");
-        } else {
-          submitBtn.disabled = true;
-          submitBtn.classList.replace("fulfilled", "unfulfilled");
-        }
-      };
+    imgInput.addEventListener("change", () => {
+      checkFormValidity();
 
-      imgInput.addEventListener("change", () => {
-        checkFormValidity();
+      const file = imgInput.files[0];
 
-        const file = imgInput.files[0];
-
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            previewImg.src = e.target.result;
-            previewImg.classList.remove("hidden");
-            label.classList.replace("page-2", "hidden");
-          };
-          reader.readAsDataURL(file);
-        } else {
-          previewImg.classList.add("hidden");
-          label.classList.replace("hidden", "page-2");
-        }
-      });
-      titleInput.addEventListener("input", checkFormValidity);
-      categorySelect.addEventListener("change", checkFormValidity);
-
-      //When the user submit its new work
-      imgUploadForm.addEventListener("submit", (event) => {
-        event.preventDefault();
-
-        const formData = new FormData(imgUploadForm);
-        const image = formData.get("image");
-        const title = formData.get("title");
-        const category = formData.get("category");
-
-        console.log(formData);
-        fetch("http://localhost:5678/api/works", {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: formData,
-        })
-          .then((response) => {
-            if (!response.ok) {
-              alert("Erreur lors de l'envoi du formulaire");
-            }
-            return response.json();
-          })
-          .then((data) => {
-            console.log("Formulaire envoyé avec succès :", data);
-          });
-      });
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          previewImg.src = e.target.result;
+          previewImg.classList.remove("hidden");
+          label.classList.replace("page-2", "hidden");
+        };
+        reader.readAsDataURL(file);
+      } else {
+        previewImg.classList.add("hidden");
+        label.classList.replace("hidden", "page-2");
+      }
     });
+
+    titleInput.addEventListener("input", checkFormValidity);
+    categorySelect.addEventListener("change", checkFormValidity);
+  });
+
+  // When we submit the form
+  imgUploadForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(imgUploadForm);
+    const image = formData.get("image");
+    const title = formData.get("title");
+    const category = formData.get("category");
+
+    console.log(formData);
+    fetch("http://localhost:5678/api/works", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    })
+      .then((response) => {
+        if (!response.ok) {
+          alert("Erreur lors de l'envoi du formulaire");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Formulaire envoyé avec succès :", data);
+
+        // add the new work to the main and the modal gallery
+        addWorkToMainGallery(data);
+        addWorkToModalGallery(data);
+        editModal.classList.replace("logged", "hidden");
+        resetModal();
+      });
   });
 }
